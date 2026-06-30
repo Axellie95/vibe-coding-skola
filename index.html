@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibe Coding – Kom igång</title>
+<style>
+  :root{
+    --bg:#f5f6fb;
+    --ink:#1a1c2e;
+    --muted:#646a86;
+    --line:#e4e6f1;
+    --card:#ffffff;
+    --accent:#5b5bf5;
+    --accent-soft:#ececff;
+    --done:#1faa6b;
+    --done-soft:#e4f7ee;
+    --shadow:0 8px 30px rgba(30,32,70,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.55;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+  /* progress bar */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,246,251,.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:12px 0;
+  }
+  .topbar .wrap{display:flex;align-items:center;gap:14px}
+  .pill{font-weight:700;font-size:14px;white-space:nowrap}
+  .track{flex:1;height:10px;border-radius:99px;background:#e6e8f3;overflow:hidden}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,#5b5bf5,#8a5bf5);border-radius:99px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+  .langs{display:flex;gap:6px}
+  .lang{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:6px 10px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:all .15s}
+  .lang:hover{border-color:var(--accent)}
+  .lang.active{background:var(--accent);border-color:var(--accent);color:#fff}
+  .reset{border:1.5px solid var(--line);background:#fff;border-radius:9px;padding:6px 10px;font-weight:700;font-size:13px;cursor:pointer;color:var(--muted);transition:all .15s}
+  .reset:hover{border-color:#ff5b7f;color:#ff5b7f}
+  [contenteditable="true"]{outline:2px dashed var(--accent);outline-offset:3px;border-radius:6px;background:#fff;cursor:text}
+  body.editing .placeholder{background:#fff;border-color:var(--accent)}
+
+  /* student note form */
+  .noteform{margin-top:14px;background:#f4f7ff;border:1px solid #d9e1ff;border-radius:12px;padding:14px}
+  .note-label{margin:0 0 8px;font-size:14px;font-weight:700;color:#3a3f6b}
+  .noteinput{width:100%;border:1.5px solid var(--line);border-radius:9px;padding:10px;font:inherit;font-size:14px;resize:vertical}
+  .noteinput:focus{outline:none;border-color:var(--accent)}
+  .notesend{margin-top:8px;background:var(--accent);color:#fff;border:none;border-radius:9px;padding:9px 16px;font-weight:700;font-size:14px;cursor:pointer}
+  .notesend:hover{filter:brightness(1.07)}
+  .notethanks{margin-left:10px;color:var(--done);font-weight:700;font-size:14px}
+
+  /* inbox modal */
+  .modal{position:fixed;inset:0;background:rgba(20,22,50,.5);z-index:200;display:none;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+  .modal.open{display:flex}
+  .inboxbox{background:#fff;border-radius:18px;max-width:640px;width:100%;padding:24px;box-shadow:0 30px 60px rgba(0,0,0,.3)}
+  .inboxbox h3{margin:0 0 4px}
+  .inboxhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .inboxclose{border:none;background:#eee;border-radius:8px;width:34px;height:34px;font-size:20px;cursor:pointer}
+  .noteitem{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .noteitem .meta{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+  .noteitem .body{font-size:15px}
+
+  /* hero */
+  .hero{text-align:center;padding:64px 0 36px}
+  .hero h1{font-size:40px;line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+  .hero p{font-size:19px;color:var(--muted);max-width:560px;margin:0 auto 26px}
+  .cta{
+    display:inline-block;background:var(--accent);color:#fff;text-decoration:none;
+    font-weight:700;font-size:17px;padding:14px 30px;border-radius:14px;
+    box-shadow:0 10px 24px rgba(91,91,245,.32);transition:transform .15s,box-shadow .15s;
+  }
+  .cta:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(91,91,245,.4)}
+
+  section{padding:30px 0}
+  .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;color:var(--accent);margin:0 0 6px}
+  h2{font-size:27px;margin:0 0 6px;letter-spacing:-.01em}
+  .lead{color:var(--muted);margin:0 0 24px;font-size:16px}
+
+  /* MAP */
+  .map{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px 20px;box-shadow:var(--shadow)}
+  .actor{font-size:15px;font-weight:700;text-align:center;padding:6px 0}
+  .actor .big{font-size:30px;display:block}
+  .arrow{text-align:center;color:var(--muted);font-size:13px;padding:6px 0;line-height:1.2}
+  .arrow b{display:block;font-size:18px;color:#b9bcd4}
+  .zone{border:1.5px dashed var(--line);border-radius:18px;padding:18px;margin:4px auto;max-width:560px}
+  .zone-title{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:14px}
+  .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .box{
+    cursor:pointer;background:#fbfbfe;border:1.5px solid var(--line);border-radius:14px;
+    padding:14px 16px;width:200px;text-align:center;transition:all .25s;position:relative;
+  }
+  .box:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .box .ico{font-size:24px}
+  .box .name{font-weight:800;margin-top:4px}
+  .box .role{font-size:13px;color:var(--muted);margin-top:2px}
+  .box .check{position:absolute;top:8px;right:10px;font-size:14px;opacity:0;transition:opacity .25s}
+  .box.done{border-color:var(--done);background:var(--done-soft);box-shadow:0 0 0 3px rgba(31,170,107,.12)}
+  .box.done .check{opacity:1}
+  .foundation{
+    margin:14px auto 0;max-width:560px;text-align:center;border-radius:16px;
+    background:linear-gradient(180deg,#11132b,#23264d);color:#fff;padding:18px;cursor:pointer;
+    transition:all .25s;border:2px solid transparent;
+  }
+  .foundation:hover{transform:translateY(-2px)}
+  .foundation.done{border-color:var(--done);box-shadow:0 0 0 3px rgba(31,170,107,.25)}
+  .foundation .name{font-weight:800;font-size:16px}
+  .foundation .role{font-size:13px;opacity:.8;margin-top:3px}
+  .maptip{text-align:center;color:var(--muted);font-size:13px;margin-top:16px}
+
+  /* cards */
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 22px;
+    margin-bottom:16px;box-shadow:var(--shadow);transition:border-color .25s;scroll-margin-top:80px;
+  }
+  .card.done{border-color:var(--done)}
+  .card-head{display:flex;align-items:flex-start;gap:14px}
+  .card-ico{font-size:30px;line-height:1}
+  .card-title{font-size:20px;font-weight:800;margin:0}
+  .card-num{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.05em}
+  .what{margin:10px 0 4px;font-size:16px}
+  .why{color:var(--muted);margin:0 0 16px;font-size:15px}
+  .why b{color:var(--ink)}
+  .card-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .dl{
+    display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent);
+    text-decoration:none;font-weight:700;padding:10px 18px;border-radius:11px;font-size:15px;transition:background .15s;
+  }
+  .dl:hover{background:#dedeff}
+  .donebtn{
+    display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fff;
+    color:var(--ink);font-weight:700;padding:10px 16px;border-radius:11px;cursor:pointer;font-size:15px;transition:all .15s;
+  }
+  .donebtn:hover{border-color:var(--done)}
+  .card.done .donebtn{background:var(--done-soft);border-color:var(--done);color:var(--done)}
+
+  details.stuck{margin-top:16px;border-top:1px dashed var(--line);padding-top:12px}
+  details.stuck summary{cursor:pointer;font-weight:700;color:var(--muted);font-size:14px;list-style:none}
+  details.stuck summary::-webkit-details-marker{display:none}
+  details.stuck summary:before{content:"➕ ";}
+  details.stuck[open] summary:before{content:"➖ ";}
+  .placeholder{
+    margin-top:10px;background:#fffaf0;border:1px dashed #f0d9a8;border-radius:10px;
+    padding:12px 14px;color:#8a6d2f;font-size:14px;
+  }
+  .placeholder b{color:#6b531c}
+
+  /* mental gaps */
+  .gap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .gap h3{margin:0 0 6px;font-size:17px}
+  .gap p{margin:0;color:var(--muted);font-size:15px}
+
+  /* finish */
+  .finish{text-align:center;background:linear-gradient(160deg,#5b5bf5,#8a5bf5);color:#fff;border-radius:24px;padding:50px 24px;margin:30px 0 60px;box-shadow:0 20px 50px rgba(91,91,245,.3)}
+  .finish h2{color:#fff;font-size:30px}
+  .finish p{font-size:18px;opacity:.92;max-width:480px;margin:8px auto 0}
+  .finish .lock{font-size:15px;opacity:.85;margin-top:18px}
+  .seal{font-size:13px;color:var(--muted);text-align:center;padding:0 0 50px;max-width:520px;margin:0 auto}
+
+  canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:100}
+
+  @media(max-width:560px){
+    .hero h1{font-size:32px}
+    .box{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<!-- PROGRESS + LANGUAGE -->
+<div class="topbar">
+  <div class="wrap">
+    <span class="pill" id="pillTxt"></span>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="langs">
+      <button class="lang" data-lang="sv">SV</button>
+      <button class="lang" data-lang="en">EN</button>
+      <button class="lang" data-lang="fr">FR</button>
+    </div>
+    <button class="reset" id="resetBtn" data-i="reset_btn"></button>
+    <button class="reset" id="editBtn" data-i="edit_btn" style="display:none"></button>
+    <button class="reset" id="saveBtn" data-i="save_btn" style="display:none;border-color:var(--done);color:var(--done)"></button>
+    <button class="reset" id="inboxBtn" data-i="inbox_btn" style="display:none"></button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1 data-i="hero_h1"></h1>
+    <p data-i="hero_p"></p>
+    <a class="cta" href="#map" data-i="hero_cta"></a>
+  </div>
+
+  <!-- MAP -->
+  <section id="map">
+    <p class="eyebrow" data-i="m_eyebrow"></p>
+    <h2 data-i="m_h2"></h2>
+    <p class="lead" data-i="m_lead"></p>
+
+    <div class="map">
+      <div class="actor"><span class="big">🧑</span><span data-i="actor_you"></span></div>
+      <div class="arrow"><b>↓</b><span data-i="arr_talk"></span></div>
+
+      <div class="zone">
+        <div class="zone-title" data-i="z_workshop"></div>
+        <div class="row">
+          <div class="box" data-step="claude">
+            <span class="check">✓</span>
+            <div class="ico">🧠</div>
+            <div class="name">LLM (Claude)</div>
+            <div class="role" data-i="llm_role"></div>
+          </div>
+          <div class="box" data-step="vscode">
+            <span class="check">✓</span>
+            <div class="ico">💻</div>
+            <div class="name">VS Code</div>
+            <div class="role" data-i="vscode_maprole"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow"><b>↓</b><span data-i="arr_save"></span></div>
+
+      <div class="zone">
+        <div class="zone-title" data-i="z_safety"></div>
+        <div class="row">
+          <div class="box" data-step="git">
+            <span class="check">✓</span>
+            <div class="ico">🌿</div>
+            <div class="name">Git</div>
+            <div class="role" data-i="git_maprole"></div>
+          </div>
+          <div class="box" data-step="github">
+            <span class="check">✓</span>
+            <div class="ico">🐙</div>
+            <div class="name">GitHub</div>
+            <div class="role" data-i="github_maprole"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow"><b>↓</b><span data-i="arr_pub"></span></div>
+
+      <div class="zone">
+        <div class="zone-title" data-i="z_world"></div>
+        <div class="row">
+          <div class="box" data-step="netlify">
+            <span class="check">✓</span>
+            <div class="ico">🚀</div>
+            <div class="name">Netlify</div>
+            <div class="role" data-i="netlify_maprole"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arrow"><b>↓</b></div>
+      <div class="actor"><span class="big">🌍</span><span data-i="actor_user"></span></div>
+
+      <div class="foundation" data-step="supabase">
+        <div class="name" data-i="foundation_name"></div>
+        <div class="role" data-i="foundation_role"></div>
+      </div>
+
+      <p class="maptip" data-i="maptip"></p>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section id="tools">
+    <p class="eyebrow" data-i="t_eyebrow"></p>
+    <h2 data-i="t_h2"></h2>
+    <p class="lead" data-i="t_lead"></p>
+
+    <!-- 1 VS CODE -->
+    <div class="card" id="vscode">
+      <div class="card-head">
+        <div class="card-ico">💻</div>
+        <div><div class="card-num" data-i="num1"></div><h3 class="card-title">VS Code</h3></div>
+      </div>
+      <p class="what" data-i="vscode_what"></p>
+      <p class="why" data-i="vscode_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://code.visualstudio.com" target="_blank" data-i="dl_vscode"></a>
+        <button class="donebtn" data-step="vscode"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_vscode"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="vscode" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- 2 NODE -->
+    <div class="card" id="node">
+      <div class="card-head">
+        <div class="card-ico">⚙️</div>
+        <div><div class="card-num" data-i="num2"></div><h3 class="card-title">Node.js</h3></div>
+      </div>
+      <p class="what" data-i="node_what"></p>
+      <p class="why" data-i="node_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://nodejs.org" target="_blank" data-i="dl_node"></a>
+        <button class="donebtn" data-step="node"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_node"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="node" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- 3 GIT + GITHUB -->
+    <div class="card" id="git">
+      <div class="card-head">
+        <div class="card-ico">🌿</div>
+        <div><div class="card-num" data-i="num3"></div><h3 class="card-title">Git + GitHub</h3></div>
+      </div>
+      <p class="what" data-i="git_what"></p>
+      <p class="why" data-i="git_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://git-scm.com/downloads" target="_blank" data-i="dl_git"></a>
+        <a class="dl" href="https://github.com" target="_blank" data-i="dl_github"></a>
+        <a class="dl" href="https://desktop.github.com" target="_blank" data-i="dl_ghd"></a>
+        <button class="donebtn" data-step="github"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_git"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="git" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- 4 CLAUDE -->
+    <div class="card" id="claude">
+      <div class="card-head">
+        <div class="card-ico">🧠</div>
+        <div><div class="card-num" data-i="num4"></div><h3 class="card-title" data-i="claude_title"></h3></div>
+      </div>
+      <p class="what" data-i="claude_what"></p>
+      <p class="why" data-i="claude_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://claude.ai" target="_blank" data-i="dl_claude"></a>
+        <button class="donebtn" data-step="claude"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_claude"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="claude" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- 5 SUPABASE -->
+    <div class="card" id="supabase">
+      <div class="card-head">
+        <div class="card-ico">🗄️</div>
+        <div><div class="card-num" data-i="num5"></div><h3 class="card-title">Supabase</h3></div>
+      </div>
+      <p class="what" data-i="supabase_what"></p>
+      <p class="why" data-i="supabase_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://supabase.com" target="_blank" data-i="dl_supabase"></a>
+        <button class="donebtn" data-step="supabase"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_supabase"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="supabase" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- 6 NETLIFY -->
+    <div class="card" id="netlify">
+      <div class="card-head">
+        <div class="card-ico">🚀</div>
+        <div><div class="card-num" data-i="num6"></div><h3 class="card-title">Netlify</h3></div>
+      </div>
+      <p class="what" data-i="netlify_what"></p>
+      <p class="why" data-i="netlify_why"></p>
+      <div class="card-actions">
+        <a class="dl" href="https://netlify.com" target="_blank" data-i="dl_netlify"></a>
+        <button class="donebtn" data-step="netlify"></button>
+      </div>
+      <details class="stuck"><summary data-i="stuck"></summary>
+        <div class="placeholder" data-i="ph_netlify"></div>
+        <div class="noteform">
+          <p class="note-label" data-i="note_label"></p>
+          <textarea class="noteinput" data-i-ph="note_ph" rows="2"></textarea>
+          <div><button class="notesend" data-step="netlify" data-i="note_send"></button><span class="notethanks" data-i="note_thanks" style="display:none"></span></div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- MENTAL GAPS -->
+  <section id="understand">
+    <p class="eyebrow" data-i="g_eyebrow"></p>
+    <h2 data-i="g_h2"></h2>
+    <p class="lead" data-i="g_lead"></p>
+    <div class="gap"><h3 data-i="gap1_h"></h3><p data-i="gap1_p"></p></div>
+    <div class="gap"><h3 data-i="gap2_h"></h3><p data-i="gap2_p"></p></div>
+    <div class="gap"><h3 data-i="gap3_h"></h3><p data-i="gap3_p"></p></div>
+  </section>
+
+  <!-- ERROR DICTIONARY -->
+  <section id="errors">
+    <p class="eyebrow" data-i="e_eyebrow"></p>
+    <h2 data-i="e_h2"></h2>
+    <p class="lead" data-i="e_lead"></p>
+    <div class="gap"><h3 data-i="err_h"></h3><p data-i="err_p"></p></div>
+  </section>
+
+  <!-- FINISH -->
+  <div class="finish" id="finish">
+    <h2 data-i="f_h2"></h2>
+    <p data-i="f_p"></p>
+    <p class="lock" id="lockTxt"></p>
+  </div>
+
+  <p class="seal" data-i="seal"></p>
+
+</div>
+
+<div class="modal" id="inboxModal">
+  <div class="inboxbox">
+    <div class="inboxhead">
+      <h3 data-i="inbox_title"></h3>
+      <button class="inboxclose" id="inboxClose">×</button>
+    </div>
+    <div id="inboxList"></div>
+  </div>
+</div>
+
+<canvas id="confetti"></canvas>
+
+<script>
+  const T = {
+    sv:{
+      done_word:"klart", btn_do:"Markera som klart", btn_done:"✓ Klart",
+      reset_btn:"↺ Nollställ", reset_confirm:"Vill du nollställa alla avbockade steg?",
+      edit_btn:"✏️ Redigera", edit_off:"✓ Klar", save_btn:"💾 Spara",
+      pw_prompt:"Lösenord för att spara:", saved:"Sparat och live! ✅", save_err:"Fel lösenord – inget sparades.",
+      edit_hint:"Redigeringsläge på. Klicka i de markerade rutorna och skriv. Tryck Spara när du är klar. (Du redigerar språket: ",
+      note_label:"Fastnar du fortfarande? Skriv vad som strular, så hjälper vi dig:", note_ph:"Beskriv vad som hände eller vad du undrar...", note_send:"Skicka fråga", note_thanks:"Tack! Din fråga är skickad. ✅", note_empty:"Skriv något först.",
+      inbox_btn:"📥 Frågor", inbox_title:"Elevernas frågor", inbox_empty:"Inga frågor än.",
+      lock:"Bocka av alla 6 verktyg så firar vi.", lock_done:"Allt klart. Snyggt jobbat! 🚀",
+      hero_h1:"Från noll till din första riktiga app",
+      hero_p:"Du behöver inte kunna koda. Du behöver bara följa pilen. Vi installerar 6 verktyg, sen bygger vi något på riktigt tillsammans.",
+      hero_cta:"Sätt igång &nbsp;→",
+      m_eyebrow:"Helheten först", m_h2:"Så här hänger allt ihop",
+      m_lead:"Det här är en vanlig arbetsdag, uppifrån och ner. Förstå bilden, så blir varje verktyg logiskt. Klicka på en ruta för att hoppa till den.",
+      actor_you:"DU", arr_talk:"du pratar i vanlig text",
+      z_workshop:"Din verkstad (på din dator)",
+      llm_role:"hjärnan – skriver koden. Välj den bästa för jobbet",
+      vscode_maprole:"där koden bor och körs",
+      arr_save:"du sparar ditt arbete", z_safety:"Säkerhet & historik",
+      git_maprole:"sparar varje version lokalt", github_maprole:"molnkopia + ångra-knapp för allt",
+      arr_pub:"publiceras automatiskt", z_world:"Ut i världen",
+      netlify_maprole:"lägger din sida LIVE på nätet", actor_user:"ANVÄNDAREN",
+      foundation_name:"🗄️ Supabase – ryggraden, ligger under allt",
+      foundation_role:"data · inloggningar · secrets (dina hemligheter)",
+      maptip:"När du bockar av ett verktyg nedan lyser dess ruta upp här. ✓",
+      t_eyebrow:"Steg för steg", t_h2:"De 6 verktygen",
+      t_lead:"Ta dem uppifrån och ner. Installera, bocka av, gå vidare. Inga andra val behövs.",
+      num1:"VERKTYG 1", num2:"VERKTYG 2", num3:"VERKTYG 3", num4:"VERKTYG 4", num5:"VERKTYG 5", num6:"VERKTYG 6",
+      stuck:"Fastnar du? Klicka här",
+      vscode_what:"Din arbetsyta. Programmet där all kod bor och där du jobbar.",
+      vscode_why:"<b>Varför:</b> Tänk på det som ditt skrivbord. Allt annat öppnas och hanteras härifrån.",
+      dl_vscode:"⬇ Ladda ner VS Code",
+      ph_vscode:"<b>Var skriver jag egentligen?</b> Öppna ditt projekt via Arkiv → Öppna mapp; dina filer dyker upp till vänster. För att köra något, öppna terminalen (Terminal → New Terminal) – rutan längst ner där du skriver kommandon. Du behöver inte memorera något: Claude säger exakt vad du ska klistra in och var.",
+      node_what:"Motorn i bakgrunden. Du ser den aldrig, men nästan allt körs på den.",
+      node_why:"<b>Varför:</b> Utan Node.js kan du inte installera eller köra något. Ladda ner \"LTS\"-versionen.",
+      dl_node:"⬇ Ladda ner Node.js (LTS)",
+      ph_node:"<b>Vilken version?</b> Alltid den stora gröna <b>LTS</b>-knappen, aldrig \"Current\". Kolla att det funkar: öppna en terminal och skriv <code>node -v</code> – ett nummer som v20.x betyder att allt är bra. Inget syns när du installerat, det är normalt; Node jobbar i bakgrunden.",
+      git_what:"Git sparar varje version av din kod lokalt. GitHub är molnet där den ligger säkert.",
+      git_why:"<b>Varför:</b> Det här är din ångra-knapp för allt, och din säkerhetskopia. Inget kan gå förlorat. Tips: ladda även ner GitHub Desktop i början, det gör det enklare utan kommandon.",
+      dl_git:"⬇ Ladda ner Git", dl_github:"⬇ Skapa GitHub-konto", dl_ghd:"⬇ GitHub Desktop",
+      ph_git:"<b>Git vs GitHub?</b> Git bor på din dator och sparar versioner; GitHub är den säkra molnkopian. Enklast i början: installera <b>GitHub Desktop</b>, logga in, sen \"Add Local Repository\" → välj din projektmapp → \"Publish\". Din första \"commit\" är bara en sparning med en etikett. Frågar den efter namn och mejl första gången är det helt normalt.",
+      claude_title:"Claude (din LLM)",
+      claude_what:"Hjärnan som faktiskt skriver koden. Du pratar i vanlig text, den bygger åt dig.",
+      claude_why:"<b>Varför:</b> Det här är hela poängen med vibe coding. Du behöver ett betalt abonnemang (Pro eller Max) plus Claude Code, som kopplar in den direkt i VS Code. <b>Välj alltid den LLM som är bäst för just ditt jobb</b> – hjärnan kan bytas, flödet runt omkring är detsamma.",
+      dl_claude:"⬇ Skaffa Claude (Pro/Max)",
+      ph_claude:"<b>Hur pratar jag med den?</b> Installera <b>Claude Code</b> så bor Claude inuti VS Code, sen ber du bara med vanliga ord: \"bygg en sida som…\". Var specifik. När något går sönder, klistra in den röda feltexten rakt tillbaka och be den fixa det – det är hela loopen.",
+      supabase_what:"Ryggraden. Här lagras all data, inloggningar och dina hemligheter (secrets) – till exempel dina API-nycklar.",
+      supabase_why:"<b>Varför:</b> Det är fundamentet som bär upp resten av din app. Gratis att börja med.",
+      dl_supabase:"⬇ Skapa Supabase-konto",
+      ph_supabase:"<b>Var lägger jag mina hemligheter?</b> API-nycklar och lösenord ligger i Supabase (eller hostingens miljöinställningar) – aldrig direkt i koden. Varför: din kod pushas till GitHub som kan vara öppet, och allt där kan kopieras av främlingar. Tumregel: är det en nyckel eller ett lösenord hör det aldrig hemma i en fil du pushar.",
+      netlify_what:"Tar din sida live. Kopplas ihop med GitHub och publicerar automatiskt.",
+      netlify_why:"<b>Varför:</b> Varje gång du sparar uppdateras din live-sida av sig själv. Gratis att börja med.",
+      dl_netlify:"⬇ Skapa Netlify-konto",
+      ph_netlify:"<b>Hur går jag live?</b> Netlify → \"Add new site\" → \"Import from GitHub\" → välj ditt repo. Sen är det automatiskt: varje sparning till GitHub publicerar om sidan inom en minut. En \"deploy\" är bara Netlify som bygger om sidan. Om en deploy failar, öppna deploy-loggen – de sista röda raderna säger vilken fil eller vilket kommando som strulade.",
+      g_eyebrow:"Nu förstår vi tre saker", g_h2:"De mentala gapen",
+      g_lead:"Det här är sakerna folk faktiskt snubblar på. Lugna förklaringar, inga konstigheter.",
+      gap1_h:"Vad är en HTML-fil, och varför skapar Claude en sån?",
+      gap1_p:"En HTML-fil är en sida i en webbplats – strukturen som en webbläsare läser för att visa din text, dina knappar och bilder. Tänk på den som ritningen till ett enda rum. När du ber Claude \"bygg en sida\" är HTML den mest grundläggande, universella byggstenen, så den börjar oftast där. Dubbelklicka på en .html-fil så öppnas den i din webbläsare, precis som en riktig sajt.",
+      gap2_h:"Var lägger jag mina hemligheter (secrets) i Supabase?",
+      gap2_p:"Hemligheter är saker som API-nycklar och lösenord. De ligger i Supabase (eller hostingens miljöinställningar), aldrig skrivna rakt in i koden. Varför: din kod pushas till GitHub som kan vara öppet – och allt där kan kopieras. Så: data och hemligheter bor i Supabase; din kod frågar bara Supabase efter dem när den behöver dem.",
+      gap3_h:"Hur kopplar jag GitHub till Netlify så min sida går live?",
+      gap3_p:"Engångsinställning: i Netlify välj \"Add new site → Import an existing project → GitHub\", och välj sen ditt repo. Netlify bygger det och ger dig en live-länk. Därefter är det automatiskt – varje sparning till GitHub publicerar om inom en minut. Uppdateras inget? Öppna fliken \"Deploys\" och läs den senaste loggen; felet ligger nästan alltid i de sista röda raderna.",
+      e_eyebrow:"Något gick fel?", e_h2:"Felmeddelanden översatta",
+      e_lead:"Vanligt fel → vad det betyder på svenska → vad du gör. Det är här folk ger upp, så det är här du vinner dem.",
+      err_h:"🚦 De 3 felen som stoppar nybörjare (och vad de faktiskt betyder)",
+      err_p:"<b>\"command not found\"</b> → programmet är inte installerat än, eller så behöver du stänga och öppna terminalen igen. &nbsp; <b>\"permission denied\"</b> → du rör något du inte har rättigheter till; lägg bara till <code>sudo</code> om Claude säger åt dig. &nbsp; <b>\"port already in use\"</b> → något körs redan; stäng den andra terminalen eller starta om.<br><b>Gyllene regeln:</b> kopiera den röda texten, klistra in den till Claude och fråga \"vad betyder det här och hur fixar jag det?\" – det ensamt löser 90%.",
+      f_h2:"🎉 Du har samma setup som proffsen",
+      f_p:"Sex verktyg, ett tydligt flöde, och en hjärna som bygger åt dig. Nu är det dags att bygga något på riktigt.",
+      seal:"Den här guiden? Byggd på en eftermiddag med exakt metoden du precis lärt dig."
+    },
+    en:{
+      done_word:"done", btn_do:"Mark as done", btn_done:"✓ Done",
+      reset_btn:"↺ Reset", reset_confirm:"Reset all checked steps?",
+      edit_btn:"✏️ Edit", edit_off:"✓ Done", save_btn:"💾 Save",
+      pw_prompt:"Password to save:", saved:"Saved and live! ✅", save_err:"Wrong password – nothing was saved.",
+      edit_hint:"Edit mode on. Click the highlighted boxes and type. Press Save when done. (You're editing the language: ",
+      note_label:"Still stuck? Tell us what's not working and we'll help:", note_ph:"Describe what happened or what you're wondering about...", note_send:"Send question", note_thanks:"Thanks! Your question has been sent. ✅", note_empty:"Write something first.",
+      inbox_btn:"📥 Questions", inbox_title:"Student questions", inbox_empty:"No questions yet.",
+      lock:"Check off all 6 tools and we'll celebrate.", lock_done:"All done. Great job! 🚀",
+      hero_h1:"From zero to your first real app",
+      hero_p:"You don't need to know how to code. You just need to follow the arrow. We'll install 6 tools, then build something real together.",
+      hero_cta:"Let's go &nbsp;→",
+      m_eyebrow:"The big picture first", m_h2:"How it all fits together",
+      m_lead:"This is a normal working day, top to bottom. Understand the picture and every tool makes sense. Click a box to jump to it.",
+      actor_you:"YOU", arr_talk:"you talk in plain language",
+      z_workshop:"Your workshop (on your computer)",
+      llm_role:"the brain – writes the code. Pick the best one for the job",
+      vscode_maprole:"where the code lives and runs",
+      arr_save:"you save your work", z_safety:"Safety & history",
+      git_maprole:"saves every version locally", github_maprole:"cloud backup + undo button for everything",
+      arr_pub:"publishes automatically", z_world:"Out into the world",
+      netlify_maprole:"puts your site LIVE on the web", actor_user:"THE USER",
+      foundation_name:"🗄️ Supabase – the backbone, sits under everything",
+      foundation_role:"data · logins · secrets (your sensitive keys)",
+      maptip:"When you check off a tool below, its box lights up here. ✓",
+      t_eyebrow:"Step by step", t_h2:"The 6 tools",
+      t_lead:"Take them top to bottom. Install, check off, move on. No other choices needed.",
+      num1:"TOOL 1", num2:"TOOL 2", num3:"TOOL 3", num4:"TOOL 4", num5:"TOOL 5", num6:"TOOL 6",
+      stuck:"Stuck? Click here",
+      vscode_what:"Your workspace. The program where all the code lives and where you work.",
+      vscode_why:"<b>Why:</b> Think of it as your desk. Everything else is opened and managed from here.",
+      dl_vscode:"⬇ Download VS Code",
+      ph_vscode:"<b>Where do I actually write?</b> Open your project with File → Open Folder; your files appear on the left. To run things, open the terminal (Terminal → New Terminal) – the box at the bottom where you type commands. You don't memorise anything: Claude tells you exactly what to paste and where.",
+      node_what:"The engine in the background. You'll never see it, but almost everything runs on it.",
+      node_why:"<b>Why:</b> Without Node.js you can't install or run anything. Download the \"LTS\" version.",
+      dl_node:"⬇ Download Node.js (LTS)",
+      ph_node:"<b>Which version?</b> Always the big green <b>LTS</b> button, never \"Current\". To check it worked: open a terminal and type <code>node -v</code> – a number like v20.x means you're good. Nothing visible opens, that's normal; Node runs in the background.",
+      git_what:"Git saves every version of your code locally. GitHub is the cloud where it's stored safely.",
+      git_why:"<b>Why:</b> This is your undo button for everything, and your backup. Nothing can be lost. Tip: also download GitHub Desktop in the beginning, it makes things easier without commands.",
+      dl_git:"⬇ Download Git", dl_github:"⬇ Create GitHub account", dl_ghd:"⬇ GitHub Desktop",
+      ph_git:"<b>Git vs GitHub?</b> Git lives on your computer and saves versions; GitHub is the safe cloud copy. Easiest start: install <b>GitHub Desktop</b>, sign in, then \"Add Local Repository\" → pick your project folder → \"Publish\". Your first \"commit\" is just a save with a label. If it asks for your name and email the first time, that's normal.",
+      claude_title:"Claude (your LLM)",
+      claude_what:"The brain that actually writes the code. You talk in plain language, it builds for you.",
+      claude_why:"<b>Why:</b> This is the whole point of vibe coding. You need a paid subscription (Pro or Max) plus Claude Code, which plugs it straight into VS Code. <b>Always pick the LLM that's best for your particular job</b> – the brain can be swapped, the flow around it stays the same.",
+      dl_claude:"⬇ Get Claude (Pro/Max)",
+      ph_claude:"<b>How do I talk to it?</b> Install <b>Claude Code</b> so Claude lives inside VS Code, then just ask in plain words: \"build me a page that…\". Be specific. When something breaks, paste the red error text straight back to it and ask it to fix it – that's the whole loop.",
+      supabase_what:"The backbone. This is where all data, logins and your secrets, like your API keys, are stored.",
+      supabase_why:"<b>Why:</b> It's the foundation that holds up the rest of your app. Free to get started.",
+      dl_supabase:"⬇ Create Supabase account",
+      ph_supabase:"<b>Where do my secrets go?</b> API keys and passwords go in Supabase (or your host's environment settings) – never typed into your code. Why: your code gets pushed to GitHub, which can be public, and anything there can be copied by strangers. Rule of thumb: if it's a key or a password, it never belongs in a file you push.",
+      netlify_what:"Takes your site live. It connects to GitHub and publishes automatically.",
+      netlify_why:"<b>Why:</b> Every time you save, your live site updates by itself. Free to get started.",
+      dl_netlify:"⬇ Create Netlify account",
+      ph_netlify:"<b>How do I go live?</b> Netlify → \"Add new site\" → \"Import from GitHub\" → pick your repo. After that it's automatic: every save to GitHub republishes your site within a minute. A \"deploy\" is just Netlify rebuilding it. If a deploy fails, open the deploy log – the last red lines say which file or command broke.",
+      g_eyebrow:"Now we understand three things", g_h2:"The mental gaps",
+      g_lead:"These are the things people actually trip over. Calm explanations, no jargon.",
+      gap1_h:"What is an HTML file, and why does Claude create one?",
+      gap1_p:"An HTML file is one page of a website – the structure a browser reads to show your text, buttons and images. Think of it as the blueprint of a single room. When you ask Claude to \"build a page\", HTML is the most basic, universal building block, so it usually starts there. Double-click any .html file and it opens in your browser, exactly like a real website.",
+      gap2_h:"Where do I put my secrets in Supabase?",
+      gap2_p:"Secrets are things like API keys and passwords. They live in Supabase (or your host's environment settings), never written straight into your code. Why: your code gets pushed to GitHub, which can be public – and anything there can be copied. So: data and secrets live in Supabase; your code just asks Supabase for them when it needs them.",
+      gap3_h:"How do I connect GitHub to Netlify so my site goes live?",
+      gap3_p:"One-time setup: in Netlify choose \"Add new site → Import an existing project → GitHub\", then pick your repository. Netlify builds it and hands you a live link. From then on it's automatic – every save to GitHub republishes within a minute. If it doesn't update, open the \"Deploys\" tab and read the latest log; the problem is almost always in the last few red lines.",
+      e_eyebrow:"Something went wrong?", e_h2:"Error messages, translated",
+      e_lead:"Common error → what it means in plain English → what you do. This is where people give up, so this is where you win them.",
+      err_h:"🚦 The 3 errors that stop beginners (and what they really mean)",
+      err_p:"<b>\"command not found\"</b> → the program isn't installed yet, or you need to close and reopen the terminal. &nbsp; <b>\"permission denied\"</b> → you're touching something you don't have rights to; only add <code>sudo</code> if Claude tells you to. &nbsp; <b>\"port already in use\"</b> → something is already running; close the other terminal or restart.<br><b>Golden rule:</b> copy the red text, paste it to Claude, and ask \"what does this mean and how do I fix it?\" – that alone solves 90%.",
+      f_h2:"🎉 You now have the same setup as the pros",
+      f_p:"Six tools, one clear flow, and a brain that builds for you. Now it's time to build something real.",
+      seal:"This guide? Built in one afternoon with the exact method you just learned."
+    },
+    fr:{
+      done_word:"fait", btn_do:"Marquer comme fait", btn_done:"✓ Fait",
+      reset_btn:"↺ Réinitialiser", reset_confirm:"Réinitialiser toutes les étapes cochées ?",
+      edit_btn:"✏️ Modifier", edit_off:"✓ Terminer", save_btn:"💾 Enregistrer",
+      pw_prompt:"Mot de passe pour enregistrer :", saved:"Enregistré et en ligne ! ✅", save_err:"Mauvais mot de passe – rien n'a été enregistré.",
+      edit_hint:"Mode édition activé. Cliquez dans les cases surlignées et écrivez. Appuyez sur Enregistrer une fois terminé. (Vous modifiez la langue : ",
+      note_label:"Toujours bloqué ? Dites-nous ce qui ne marche pas et on vous aide :", note_ph:"Décrivez ce qui s'est passé ou ce que vous vous demandez...", note_send:"Envoyer la question", note_thanks:"Merci ! Votre question a été envoyée. ✅", note_empty:"Écrivez d'abord quelque chose.",
+      inbox_btn:"📥 Questions", inbox_title:"Questions des élèves", inbox_empty:"Aucune question pour l'instant.",
+      lock:"Cochez les 6 outils et on fête ça.", lock_done:"Tout est fait. Bravo ! 🚀",
+      hero_h1:"De zéro à votre première vraie application",
+      hero_p:"Pas besoin de savoir coder. Il suffit de suivre la flèche. On installe 6 outils, puis on construit quelque chose de concret ensemble.",
+      hero_cta:"C'est parti &nbsp;→",
+      m_eyebrow:"La vue d'ensemble d'abord", m_h2:"Comment tout s'assemble",
+      m_lead:"Voici une journée de travail normale, de haut en bas. Comprenez l'image et chaque outil devient logique. Cliquez sur une case pour y accéder.",
+      actor_you:"VOUS", arr_talk:"vous parlez en langage courant",
+      z_workshop:"Votre atelier (sur votre ordinateur)",
+      llm_role:"le cerveau – écrit le code. Choisissez le meilleur pour la tâche",
+      vscode_maprole:"là où le code vit et s'exécute",
+      arr_save:"vous enregistrez votre travail", z_safety:"Sécurité & historique",
+      git_maprole:"sauvegarde chaque version localement", github_maprole:"copie cloud + bouton annuler pour tout",
+      arr_pub:"publie automatiquement", z_world:"Vers le monde",
+      netlify_maprole:"met votre site EN LIGNE sur le web", actor_user:"L'UTILISATEUR",
+      foundation_name:"🗄️ Supabase – la colonne vertébrale, sous tout le reste",
+      foundation_role:"données · connexions · secrets (vos clés sensibles)",
+      maptip:"Quand vous cochez un outil ci-dessous, sa case s'allume ici. ✓",
+      t_eyebrow:"Étape par étape", t_h2:"Les 6 outils",
+      t_lead:"Prenez-les de haut en bas. Installez, cochez, continuez. Aucun autre choix nécessaire.",
+      num1:"OUTIL 1", num2:"OUTIL 2", num3:"OUTIL 3", num4:"OUTIL 4", num5:"OUTIL 5", num6:"OUTIL 6",
+      stuck:"Bloqué ? Cliquez ici",
+      vscode_what:"Votre espace de travail. Le programme où tout le code vit et où vous travaillez.",
+      vscode_why:"<b>Pourquoi :</b> Voyez-le comme votre bureau. Tout le reste s'ouvre et se gère d'ici.",
+      dl_vscode:"⬇ Télécharger VS Code",
+      ph_vscode:"<b>Où est-ce que j'écris au juste ?</b> Ouvrez votre projet avec Fichier → Ouvrir le dossier ; vos fichiers apparaissent à gauche. Pour exécuter quelque chose, ouvrez le terminal (Terminal → New Terminal) – la zone en bas où vous tapez les commandes. Rien à mémoriser : Claude vous dit exactement quoi coller et où.",
+      node_what:"Le moteur en arrière-plan. Vous ne le verrez jamais, mais presque tout fonctionne dessus.",
+      node_why:"<b>Pourquoi :</b> Sans Node.js, vous ne pouvez rien installer ni exécuter. Téléchargez la version « LTS ».",
+      dl_node:"⬇ Télécharger Node.js (LTS)",
+      ph_node:"<b>Quelle version ?</b> Toujours le gros bouton vert <b>LTS</b>, jamais « Current ». Pour vérifier que ça marche : ouvrez un terminal et tapez <code>node -v</code> – un numéro comme v20.x veut dire que tout est bon. Rien ne s'ouvre visuellement, c'est normal ; Node tourne en arrière-plan.",
+      git_what:"Git sauvegarde chaque version de votre code localement. GitHub est le cloud où il est stocké en sécurité.",
+      git_why:"<b>Pourquoi :</b> C'est votre bouton annuler pour tout, et votre sauvegarde. Rien ne peut être perdu. Astuce : téléchargez aussi GitHub Desktop au début, c'est plus simple sans commandes.",
+      dl_git:"⬇ Télécharger Git", dl_github:"⬇ Créer un compte GitHub", dl_ghd:"⬇ GitHub Desktop",
+      ph_git:"<b>Git ou GitHub ?</b> Git vit sur votre ordinateur et sauvegarde les versions ; GitHub est la copie cloud sécurisée. Le plus simple au début : installez <b>GitHub Desktop</b>, connectez-vous, puis « Add Local Repository » → choisissez votre dossier → « Publish ». Votre premier « commit » n'est qu'une sauvegarde avec une étiquette. S'il demande votre nom et courriel la première fois, c'est normal.",
+      claude_title:"Claude (votre LLM)",
+      claude_what:"Le cerveau qui écrit réellement le code. Vous parlez en langage courant, il construit pour vous.",
+      claude_why:"<b>Pourquoi :</b> C'est tout l'intérêt du vibe coding. Il vous faut un abonnement payant (Pro ou Max) plus Claude Code, qui le branche directement dans VS Code. <b>Choisissez toujours le LLM le mieux adapté à votre tâche</b> – le cerveau peut être remplacé, le flux autour reste le même.",
+      dl_claude:"⬇ Obtenir Claude (Pro/Max)",
+      ph_claude:"<b>Comment je lui parle ?</b> Installez <b>Claude Code</b> pour que Claude vive dans VS Code, puis demandez en langage courant : « construis-moi une page qui… ». Soyez précis. Quand quelque chose casse, recollez le texte d'erreur rouge directement et demandez-lui de corriger – c'est toute la boucle.",
+      supabase_what:"La colonne vertébrale. C'est là que sont stockés toutes les données, les connexions et vos secrets, par exemple vos clés API.",
+      supabase_why:"<b>Pourquoi :</b> C'est le fondement qui soutient le reste de votre application. Gratuit pour commencer.",
+      dl_supabase:"⬇ Créer un compte Supabase",
+      ph_supabase:"<b>Où vont mes secrets ?</b> Les clés API et mots de passe vont dans Supabase (ou les variables d'environnement de votre hébergeur) – jamais tapés dans le code. Pourquoi : votre code est poussé sur GitHub, qui peut être public, et tout ce qui s'y trouve peut être copié. Règle d'or : une clé ou un mot de passe n'a jamais sa place dans un fichier que vous poussez.",
+      netlify_what:"Met votre site en ligne. Il se connecte à GitHub et publie automatiquement.",
+      netlify_why:"<b>Pourquoi :</b> Chaque fois que vous enregistrez, votre site en ligne se met à jour tout seul. Gratuit pour commencer.",
+      dl_netlify:"⬇ Créer un compte Netlify",
+      ph_netlify:"<b>Comment je passe en ligne ?</b> Netlify → « Add new site » → « Import from GitHub » → choisissez votre dépôt. Ensuite c'est automatique : chaque sauvegarde sur GitHub republie le site en moins d'une minute. Un « deploy » n'est que Netlify qui reconstruit le site. Si un déploiement échoue, ouvrez le journal de déploiement – les dernières lignes rouges indiquent quel fichier ou quelle commande a planté.",
+      g_eyebrow:"Maintenant on comprend trois choses", g_h2:"Les blocages mentaux",
+      g_lead:"Voici les choses sur lesquelles les gens butent vraiment. Des explications calmes, sans jargon.",
+      gap1_h:"Qu'est-ce qu'un fichier HTML, et pourquoi Claude en crée-t-il un ?",
+      gap1_p:"Un fichier HTML est une page d'un site web – la structure qu'un navigateur lit pour afficher votre texte, vos boutons et vos images. Voyez-le comme le plan d'une seule pièce. Quand vous demandez à Claude de « construire une page », le HTML est la brique de base la plus universelle, donc il commence souvent par là. Double-cliquez sur un fichier .html et il s'ouvre dans votre navigateur, exactement comme un vrai site.",
+      gap2_h:"Où est-ce que je mets mes secrets dans Supabase ?",
+      gap2_p:"Les secrets sont des choses comme les clés API et les mots de passe. Ils vivent dans Supabase (ou les variables d'environnement de votre hébergeur), jamais écrits directement dans le code. Pourquoi : votre code est poussé sur GitHub, qui peut être public – et tout ce qui s'y trouve peut être copié. Donc : les données et les secrets vivent dans Supabase ; votre code les demande simplement à Supabase quand il en a besoin.",
+      gap3_h:"Comment connecter GitHub à Netlify pour que mon site soit en ligne ?",
+      gap3_p:"Configuration unique : dans Netlify, choisissez « Add new site → Import an existing project → GitHub », puis sélectionnez votre dépôt. Netlify le construit et vous donne un lien en ligne. Ensuite c'est automatique – chaque sauvegarde sur GitHub republie en moins d'une minute. Rien ne se met à jour ? Ouvrez l'onglet « Deploys » et lisez le dernier journal ; le problème est presque toujours dans les dernières lignes rouges.",
+      e_eyebrow:"Quelque chose a planté ?", e_h2:"Messages d'erreur, traduits",
+      e_lead:"Erreur courante → ce que ça veut dire en clair → ce que vous faites. C'est là que les gens abandonnent, donc c'est là que vous les gagnez.",
+      err_h:"🚦 Les 3 erreurs qui bloquent les débutants (et ce qu'elles veulent vraiment dire)",
+      err_p:"<b>« command not found »</b> → le programme n'est pas encore installé, ou vous devez fermer et rouvrir le terminal. &nbsp; <b>« permission denied »</b> → vous touchez à quelque chose dont vous n'avez pas les droits ; n'ajoutez <code>sudo</code> que si Claude vous le dit. &nbsp; <b>« port already in use »</b> → quelque chose tourne déjà ; fermez l'autre terminal ou redémarrez.<br><b>Règle d'or :</b> copiez le texte rouge, collez-le à Claude et demandez « qu'est-ce que ça veut dire et comment je corrige ? » – ça résout à lui seul 90 %.",
+      f_h2:"🎉 Vous avez maintenant la même config que les pros",
+      f_p:"Six outils, un flux clair, et un cerveau qui construit pour vous. Il est temps de construire quelque chose de concret.",
+      seal:"Ce guide ? Construit en un après-midi avec la méthode exacte que vous venez d'apprendre."
+    }
+  };
+
+  const TRACK = ["vscode","node","github","claude","supabase","netlify"]; // 6 items
+  const KEY = "vibe-setup-progress";
+  const LANG_KEY = "vibe-setup-lang";
+
+  // --- Supabase (cloud-redigering) ---
+  const SUPA_URL = "https://oyzrcjrvppzhbuethicc.supabase.co";
+  const SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im95enJjanJ2cHB6aGJ1ZXRoaWNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM4OTEyMTQsImV4cCI6MjA4OTQ2NzIxNH0.HDV3-G_Ua2njp8xOmIJaXEV4XbV4pczgVzM379aZw_k";
+  // Texter eleven själv ska fylla i (resten är fast UI-text)
+  const EDITABLE = ["ph_vscode","ph_node","ph_git","ph_claude","ph_supabase","ph_netlify",
+                    "gap1_h","gap1_p","gap2_h","gap2_p","gap3_h","gap3_p","err_h","err_p"];
+  const overrides = { sv:{}, en:{}, fr:{} };
+  let editing = false, savedPw = null;
+  const isAdmin = location.search.includes("edit") || location.hash === "#admin";
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch(e){ state = {}; }
+  let lang = localStorage.getItem(LANG_KEY) || (navigator.language||"sv").slice(0,2);
+  if(!T[lang]) lang = "sv";
+
+  function trackedDone(){ return TRACK.filter(s => state[s]).length; }
+
+  // Slå ihop standardtext + sparat innehåll från Supabase för aktivt språk
+  function dict(){ return Object.assign({}, T[lang], overrides[lang] || {}); }
+
+  function applyLang(){
+    const d = dict();
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i]").forEach(el=>{
+      const k = el.dataset.i;
+      if(d[k] !== undefined) el.innerHTML = d[k];
+    });
+    document.querySelectorAll("[data-i-ph]").forEach(el=>{
+      const k = el.dataset.iPh;
+      if(d[k] !== undefined) el.setAttribute("placeholder", d[k]);
+    });
+    document.querySelectorAll(".lang").forEach(b=>b.classList.toggle("active", b.dataset.lang===lang));
+    render();
+  }
+
+  function render(){
+    const d = dict();
+    const done = trackedDone();
+    const pct = Math.round(done / TRACK.length * 100);
+    document.getElementById("fill").style.width = pct + "%";
+    document.getElementById("pillTxt").textContent = done + " / 6 " + d.done_word;
+
+    document.querySelectorAll(".card").forEach(c=>{
+      const btn = c.querySelector(".donebtn");
+      if(!btn) return;
+      const step = btn.dataset.step;
+      const isDone = !!state[step];
+      c.classList.toggle("done", isDone);
+      btn.textContent = isDone ? d.btn_done : d.btn_do;
+    });
+    document.querySelectorAll("[data-step]").forEach(el=>{
+      if(el.classList.contains("donebtn")) return;
+      const step = el.dataset.step;
+      let lit = !!state[step];
+      if(step === "git") lit = !!state["github"];
+      el.classList.toggle("done", lit);
+    });
+
+    const lock = document.getElementById("lockTxt");
+    lock.textContent = (done === TRACK.length) ? d.lock_done : d.lock + " (" + done + "/6)";
+  }
+
+  function toggle(step){
+    state[step] = !state[step];
+    localStorage.setItem(KEY, JSON.stringify(state));
+    render();
+    if(state[step] && trackedDone() === TRACK.length){ celebrate(); }
+  }
+
+  document.querySelectorAll(".donebtn").forEach(b=>{
+    b.addEventListener("click", ()=> toggle(b.dataset.step));
+  });
+  document.querySelectorAll(".map [data-step]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      let id = el.dataset.step;
+      if(id === "github") id = "git";
+      const target = document.getElementById(id);
+      if(target) target.scrollIntoView({behavior:"smooth", block:"center"});
+    });
+  });
+  document.querySelectorAll(".lang").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      lang = b.dataset.lang;
+      localStorage.setItem(LANG_KEY, lang);
+      applyLang();
+    });
+  });
+  document.getElementById("resetBtn").addEventListener("click", ()=>{
+    if(confirm(dict().reset_confirm)){
+      state = {};
+      localStorage.removeItem(KEY);
+      render();
+      window.scrollTo({top:0, behavior:"smooth"});
+    }
+  });
+
+  // --- Cloud-redigering ---
+  async function loadOverrides(){
+    try{
+      const r = await fetch(SUPA_URL + "/rest/v1/vibe_guide_content?select=key,lang,html", {
+        headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY }
+      });
+      if(r.ok){
+        const rows = await r.json();
+        rows.forEach(row=>{ if(overrides[row.lang]) overrides[row.lang][row.key] = row.html; });
+      }
+    }catch(e){ /* offline = visa standardtext */ }
+    applyLang();
+  }
+
+  function setEditable(on){
+    EDITABLE.forEach(k=>{
+      const el = document.querySelector('[data-i="'+k+'"]');
+      if(el) el.contentEditable = on ? "true" : "false";
+    });
+    document.body.classList.toggle("editing", on);
+  }
+
+  const editBtn = document.getElementById("editBtn");
+  const saveBtn = document.getElementById("saveBtn");
+  const inboxBtn = document.getElementById("inboxBtn");
+  if(isAdmin){ editBtn.style.display = ""; inboxBtn.style.display = ""; }
+
+  // Elev skickar en fråga
+  document.querySelectorAll(".notesend").forEach(btn=>{
+    btn.addEventListener("click", async ()=>{
+      const form = btn.closest(".noteform");
+      const ta = form.querySelector(".noteinput");
+      const thanks = form.querySelector(".notethanks");
+      const text = (ta.value||"").trim();
+      if(!text){ alert(dict().note_empty); return; }
+      btn.disabled = true;
+      try{
+        await fetch(SUPA_URL + "/rest/v1/vibe_guide_notes", {
+          method:"POST",
+          headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json", Prefer:"return=minimal" },
+          body: JSON.stringify({ step: btn.dataset.step, lang: lang, note: text })
+        });
+        ta.value = "";
+        thanks.style.display = "inline";
+        setTimeout(()=>{ thanks.style.display="none"; }, 4000);
+      }catch(e){ alert(dict().save_err); }
+      btn.disabled = false;
+    });
+  });
+
+  // Din inkorg med elevernas frågor
+  const inboxModal = document.getElementById("inboxModal");
+  document.getElementById("inboxClose").addEventListener("click", ()=> inboxModal.classList.remove("open"));
+  inboxModal.addEventListener("click", e=>{ if(e.target===inboxModal) inboxModal.classList.remove("open"); });
+  inboxBtn.addEventListener("click", async ()=>{
+    if(!savedPw){ savedPw = prompt(dict().pw_prompt); if(!savedPw) return; }
+    try{
+      const r = await fetch(SUPA_URL + "/rest/v1/rpc/vibe_guide_notes_list", {
+        method:"POST",
+        headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
+        body: JSON.stringify({ p_password: savedPw })
+      });
+      if(!r.ok){ savedPw=null; alert(dict().save_err); return; }
+      const rows = await r.json();
+      const list = document.getElementById("inboxList");
+      if(!rows.length){ list.innerHTML = '<p style="color:var(--muted)">'+dict().inbox_empty+'</p>'; }
+      else{
+        list.innerHTML = rows.map(n=>{
+          const when = (n.created_at||"").replace("T"," ").slice(0,16);
+          const step = (n.step||"?").toUpperCase();
+          const body = (n.note||"").replace(/</g,"&lt;");
+          return '<div class="noteitem"><div class="meta">'+step+' · '+(n.lang||"").toUpperCase()+' · '+when+'</div><div class="body">'+body+'</div></div>';
+        }).join("");
+      }
+      inboxModal.classList.add("open");
+    }catch(e){ savedPw=null; alert(dict().save_err); }
+  });
+
+  editBtn.addEventListener("click", ()=>{
+    editing = !editing;
+    setEditable(editing);
+    editBtn.textContent = editing ? dict().edit_off : dict().edit_btn;
+    saveBtn.style.display = editing ? "" : "none";
+    if(editing){
+      alert(dict().edit_hint + lang.toUpperCase() + ")");
+    }
+  });
+
+  saveBtn.addEventListener("click", async ()=>{
+    if(!savedPw){ savedPw = prompt(dict().pw_prompt); if(!savedPw) return; }
+    const items = EDITABLE.map(k=>{
+      const el = document.querySelector('[data-i="'+k+'"]');
+      return { key:k, lang:lang, html: el ? el.innerHTML.trim() : "" };
+    });
+    try{
+      const r = await fetch(SUPA_URL + "/rest/v1/rpc/vibe_guide_save", {
+        method:"POST",
+        headers:{ apikey:SUPA_KEY, Authorization:"Bearer "+SUPA_KEY, "Content-Type":"application/json" },
+        body: JSON.stringify({ p_password: savedPw, p_items: items })
+      });
+      if(r.ok){
+        items.forEach(it=>{ overrides[lang][it.key] = it.html; });
+        alert(dict().saved);
+      }else{
+        savedPw = null;
+        alert(dict().save_err);
+      }
+    }catch(e){ savedPw = null; alert(dict().save_err); }
+  });
+
+  // confetti
+  const cvs = document.getElementById("confetti");
+  const ctx = cvs.getContext("2d");
+  let parts = [], raf = null;
+  function resize(){ cvs.width = innerWidth; cvs.height = innerHeight; }
+  addEventListener("resize", resize); resize();
+  function celebrate(){
+    const colors = ["#5b5bf5","#8a5bf5","#1faa6b","#ffba49","#ff5b7f"];
+    parts = [];
+    for(let i=0;i<160;i++){
+      parts.push({
+        x: innerWidth/2, y: innerHeight/3,
+        vx:(Math.random()-.5)*12, vy:(Math.random()*-12)-4,
+        s: 5+Math.random()*7, c: colors[i%colors.length],
+        rot: Math.random()*6, vr:(Math.random()-.5)*.4
+      });
+    }
+    if(!raf) loop();
+  }
+  function loop(){
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    let alive = false;
+    parts.forEach(p=>{
+      p.vy += .35; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      if(p.y < cvs.height + 40) alive = true;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6);
+      ctx.restore();
+    });
+    if(alive){ raf = requestAnimationFrame(loop); }
+    else { ctx.clearRect(0,0,cvs.width,cvs.height); raf = null; }
+  }
+
+  loadOverrides();
+</script>
+</body>
+</html>
