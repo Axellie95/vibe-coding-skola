@@ -80,6 +80,16 @@
   }
   .cta:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(91,91,245,.4)}
 
+  /* quick start one-liner */
+  .quickstart{background:#11132b;color:#fff;border-radius:18px;padding:22px 24px;margin:6px 0 10px;box-shadow:var(--shadow)}
+  .quickstart h3{margin:0 0 6px;font-size:18px}
+  .quickstart p{margin:0 0 12px;font-size:14px;opacity:.85}
+  .cmdrow{display:flex;gap:8px;align-items:stretch}
+  .cmd{flex:1;background:#0b0d20;border:1px solid #2c2f55;border-radius:10px;padding:12px 14px;font-family:Consolas,Menlo,monospace;font-size:13.5px;color:#8be28b;overflow-x:auto;white-space:nowrap}
+  .copybtn{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:0 16px;font-weight:700;cursor:pointer;font-size:14px}
+  .copybtn:hover{filter:brightness(1.1)}
+  .qs-small{font-size:12.5px;opacity:.7;margin-top:10px}
+
   section{padding:30px 0}
   .eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;font-weight:800;color:var(--accent);margin:0 0 6px}
   h2{font-size:27px;margin:0 0 6px;letter-spacing:-.01em}
@@ -200,6 +210,19 @@
     <p data-i="hero_p"></p>
     <a class="cta" href="#map" data-i="hero_cta"></a>
   </div>
+
+  <!-- QUICK START -->
+  <section id="quickstart" style="padding-top:0">
+    <div class="quickstart">
+      <h3 data-i="qs_h"></h3>
+      <p data-i="qs_p"></p>
+      <div class="cmdrow">
+        <div class="cmd" id="qsCmd">irm https://axellie95.github.io/rigcraftor-setup/setup.ps1 | iex</div>
+        <button class="copybtn" id="qsCopy" data-i="qs_copy"></button>
+      </div>
+      <p class="qs-small" data-i="qs_note"></p>
+    </div>
+  </section>
 
   <!-- MAP -->
   <section id="map">
@@ -471,6 +494,10 @@
       hero_h1:"Från noll till din första riktiga app",
       hero_p:"Du behöver inte kunna koda. Du behöver bara följa pilen. Vi installerar 6 verktyg, sen bygger vi något på riktigt tillsammans.",
       hero_cta:"Sätt igång &nbsp;→",
+      qs_h:"⚡ Snabbstart (Windows): installera allt med EN rad",
+      qs_p:"Öppna PowerShell (tryck Start, skriv \"powershell\") och klistra in raden nedan. Den installerar Git, Node.js, VS Code och Claude Code — och kollar sen själv att allt hamnade rätt.",
+      qs_copy:"Kopiera",
+      qs_note:"Slutar med en ✓-checklista. Blir något rött: stäng fönstret, öppna en NY PowerShell och kör samma rad igen. Konton (Claude Pro/Max, GitHub, Supabase, Netlify) skapar du själv i webbläsaren — och koppla ingenting ännu, det gör vi tillsammans.",
       m_eyebrow:"Helheten först", m_h2:"Så här hänger allt ihop",
       m_lead:"Det här är en vanlig arbetsdag, uppifrån och ner. Förstå bilden, så blir varje verktyg logiskt. Klicka på en ruta för att hoppa till den.",
       actor_you:"DU", arr_talk:"du pratar i vanlig text",
@@ -541,6 +568,10 @@
       hero_h1:"From zero to your first real app",
       hero_p:"You don't need to know how to code. You just need to follow the arrow. We'll install 6 tools, then build something real together.",
       hero_cta:"Let's go &nbsp;→",
+      qs_h:"⚡ Quick start (Windows): install everything with ONE line",
+      qs_p:"Open PowerShell (press Start, type \"powershell\") and paste the line below. It installs Git, Node.js, VS Code and Claude Code — then checks by itself that everything landed correctly.",
+      qs_copy:"Copy",
+      qs_note:"It ends with a ✓ checklist. If anything shows red: close the window, open a NEW PowerShell and run the same line again. Accounts (Claude Pro/Max, GitHub, Supabase, Netlify) you create yourself in the browser — and don't connect anything yet, we do that together.",
       m_eyebrow:"The big picture first", m_h2:"How it all fits together",
       m_lead:"This is a normal working day, top to bottom. Understand the picture and every tool makes sense. Click a box to jump to it.",
       actor_you:"YOU", arr_talk:"you talk in plain language",
@@ -611,6 +642,10 @@
       hero_h1:"De zéro à votre première vraie application",
       hero_p:"Pas besoin de savoir coder. Il suffit de suivre la flèche. On installe 6 outils, puis on construit quelque chose de concret ensemble.",
       hero_cta:"C'est parti &nbsp;→",
+      qs_h:"⚡ Démarrage rapide (Windows) : installez tout avec UNE ligne",
+      qs_p:"Ouvrez PowerShell (touche Démarrer, tapez « powershell ») et collez la ligne ci-dessous. Elle installe Git, Node.js, VS Code et Claude Code — puis vérifie elle-même que tout est bien en place.",
+      qs_copy:"Copier",
+      qs_note:"Elle se termine par une liste de vérification ✓. Si quelque chose est en rouge : fermez la fenêtre, ouvrez un NOUVEAU PowerShell et relancez la même ligne. Les comptes (Claude Pro/Max, GitHub, Supabase, Netlify) se créent dans le navigateur — et ne connectez rien encore, on le fait ensemble.",
       m_eyebrow:"La vue d'ensemble d'abord", m_h2:"Comment tout s'assemble",
       m_lead:"Voici une journée de travail normale, de haut en bas. Comprenez l'image et chaque outil devient logique. Cliquez sur une case pour y accéder.",
       actor_you:"VOUS", arr_talk:"vous parlez en langage courant",
@@ -911,6 +946,16 @@
     });
     if(alive){ raf = requestAnimationFrame(loop); }
     else { ctx.clearRect(0,0,cvs.width,cvs.height); raf = null; }
+  }
+
+  // quick start copy button
+  const qsBtn = document.getElementById("qsCopy");
+  if(qsBtn){
+    qsBtn.addEventListener("click", async ()=>{
+      const cmd = document.getElementById("qsCmd").textContent.trim();
+      try{ await navigator.clipboard.writeText(cmd); qsBtn.textContent="✓"; setTimeout(()=>applyLang(),1500); }
+      catch(e){ alert(cmd); }
+    });
   }
 
   loadOverrides();
