@@ -215,9 +215,12 @@
   <section id="quickstart" style="padding-top:0">
     <div class="quickstart">
       <h3 data-i="qs_h"></h3>
-      <p data-i="qs_p"></p>
+      <p data-i="qs_s1"></p>
+      <p data-i="qs_s2"></p>
+      <p data-i="qs_s3"></p>
+      <p data-i="qs_s4"></p>
       <div class="cmdrow">
-        <div class="cmd" id="qsCmd">irm https://axellie95.github.io/rigcraftor-setup/setup.ps1 | iex</div>
+        <div class="cmd" id="qsCmd" style="white-space:normal">Install Git and Node.js (LTS) on my Windows computer using winget. Then verify that Git, Node.js, VS Code and Claude Code are all correctly installed and show me a simple ✓ checklist with versions.</div>
         <button class="copybtn" id="qsCopy" data-i="qs_copy"></button>
       </div>
       <p class="qs-small" data-i="qs_note"></p>
@@ -494,10 +497,13 @@
       hero_h1:"Från noll till din första riktiga app",
       hero_p:"Du behöver inte kunna koda. Du behöver bara följa pilen. Vi installerar 6 verktyg, sen bygger vi något på riktigt tillsammans.",
       hero_cta:"Sätt igång &nbsp;→",
-      qs_h:"⚡ Snabbstart (Windows): installera allt med EN rad",
-      qs_p:"Öppna PowerShell (tryck Start, skriv \"powershell\") och klistra in raden nedan. Den installerar Git, Node.js, VS Code och Claude Code — och kollar sen själv att allt hamnade rätt. Det här är enda gången du behöver PowerShell: efter den här raden sker allt inne i VS Code med Claude.",
+      qs_h:"⚡ Snabbstart: du fixar basen — Claude installerar resten",
+      qs_s1:"<b>1. Skapa dina konton</b> (i webbläsaren): <a href='https://github.com' target='_blank' style='color:#9db4ff'>GitHub</a> · <a href='https://supabase.com' target='_blank' style='color:#9db4ff'>Supabase</a> · <a href='https://netlify.com' target='_blank' style='color:#9db4ff'>Netlify</a> — alla gratis. Plus det betalda: <a href='https://claude.ai' target='_blank' style='color:#9db4ff'>Claude</a> (Pro eller Max).",
+      qs_s2:"<b>2. Ladda ner och installera VS Code</b> → <a href='https://code.visualstudio.com' target='_blank' style='color:#9db4ff'>code.visualstudio.com</a>",
+      qs_s3:"<b>3. Hämta Claude in i VS Code:</b> tryck <b>Ctrl+Shift+X</b> (Extensions) → sök <b>\"Claude Code\"</b> → Install → logga in med ditt Claude-konto.",
+      qs_s4:"<b>4. Din allra första prompt:</b> öppna Claude (✨-ikonen) och klistra in raden nedan — Claude installerar Git + Node.js åt dig och kollar själv att allt sitter:",
       qs_copy:"Kopiera",
-      qs_note:"Slutar med en ✓-checklista. Blir något rött: stäng fönstret, öppna en NY PowerShell och kör samma rad igen. Konton (Claude Pro/Max, GitHub, Supabase, Netlify) skapar du själv i webbläsaren — och koppla ingenting ännu, det gör vi tillsammans.",
+      qs_note:"Godkänn kommandona Claude föreslår, och klicka \"Trust\" om VS Code frågar — det är normalt. Du behöver aldrig öppna en terminal själv: Claude gör jobbet. Koppla ingenting ännu — det gör vi tillsammans på passet.",
       m_eyebrow:"Helheten först", m_h2:"Så här hänger allt ihop",
       m_lead:"Det här är en vanlig arbetsdag, uppifrån och ner. Förstå bilden, så blir varje verktyg logiskt. Klicka på en ruta för att hoppa till den.",
       actor_you:"DU", arr_talk:"du pratar i vanlig text",
@@ -568,10 +574,13 @@
       hero_h1:"From zero to your first real app",
       hero_p:"You don't need to know how to code. You just need to follow the arrow. We'll install 6 tools, then build something real together.",
       hero_cta:"Let's go &nbsp;→",
-      qs_h:"⚡ Quick start (Windows): install everything with ONE line",
-      qs_p:"Open PowerShell (press Start, type \"powershell\") and paste the line below. It installs Git, Node.js, VS Code and Claude Code — then checks by itself that everything landed correctly. This is the only time you'll ever need PowerShell: after this one line, everything happens inside VS Code with Claude.",
+      qs_h:"⚡ Quick start: you set up the base — Claude installs the rest",
+      qs_s1:"<b>1. Create your accounts</b> (in the browser): <a href='https://github.com' target='_blank' style='color:#9db4ff'>GitHub</a> · <a href='https://supabase.com' target='_blank' style='color:#9db4ff'>Supabase</a> · <a href='https://netlify.com' target='_blank' style='color:#9db4ff'>Netlify</a> — all free. Plus the paid one: <a href='https://claude.ai' target='_blank' style='color:#9db4ff'>Claude</a> (Pro or Max).",
+      qs_s2:"<b>2. Download and install VS Code</b> → <a href='https://code.visualstudio.com' target='_blank' style='color:#9db4ff'>code.visualstudio.com</a>",
+      qs_s3:"<b>3. Get Claude into VS Code:</b> press <b>Ctrl+Shift+X</b> (Extensions) → search <b>\"Claude Code\"</b> → Install → sign in with your Claude account.",
+      qs_s4:"<b>4. Your very first prompt:</b> open Claude (the ✨ icon) and paste the line below — Claude installs Git + Node.js for you and checks everything by itself:",
       qs_copy:"Copy",
-      qs_note:"It ends with a ✓ checklist. If anything shows red: close the window, open a NEW PowerShell and run the same line again. Accounts (Claude Pro/Max, GitHub, Supabase, Netlify) you create yourself in the browser — and don't connect anything yet, we do that together.",
+      qs_note:"Approve the commands Claude suggests, and click \"Trust\" if VS Code asks — that's normal. You never need to open a terminal yourself: Claude does the work. Don't connect anything yet — we do the wiring together at the session.",
       m_eyebrow:"The big picture first", m_h2:"How it all fits together",
       m_lead:"This is a normal working day, top to bottom. Understand the picture and every tool makes sense. Click a box to jump to it.",
       actor_you:"YOU", arr_talk:"you talk in plain language",
@@ -642,10 +651,13 @@
       hero_h1:"De zéro à votre première vraie application",
       hero_p:"Pas besoin de savoir coder. Il suffit de suivre la flèche. On installe 6 outils, puis on construit quelque chose de concret ensemble.",
       hero_cta:"C'est parti &nbsp;→",
-      qs_h:"⚡ Démarrage rapide (Windows) : installez tout avec UNE ligne",
-      qs_p:"Ouvrez PowerShell (touche Démarrer, tapez « powershell ») et collez la ligne ci-dessous. Elle installe Git, Node.js, VS Code et Claude Code — puis vérifie elle-même que tout est bien en place. C'est la seule fois où vous aurez besoin de PowerShell : après cette ligne, tout se passe dans VS Code avec Claude.",
+      qs_h:"⚡ Démarrage rapide : vous préparez la base — Claude installe le reste",
+      qs_s1:"<b>1. Créez vos comptes</b> (dans le navigateur) : <a href='https://github.com' target='_blank' style='color:#9db4ff'>GitHub</a> · <a href='https://supabase.com' target='_blank' style='color:#9db4ff'>Supabase</a> · <a href='https://netlify.com' target='_blank' style='color:#9db4ff'>Netlify</a> — tous gratuits. Plus le payant : <a href='https://claude.ai' target='_blank' style='color:#9db4ff'>Claude</a> (Pro ou Max).",
+      qs_s2:"<b>2. Téléchargez et installez VS Code</b> → <a href='https://code.visualstudio.com' target='_blank' style='color:#9db4ff'>code.visualstudio.com</a>",
+      qs_s3:"<b>3. Amenez Claude dans VS Code :</b> appuyez sur <b>Ctrl+Shift+X</b> (Extensions) → cherchez <b>« Claude Code »</b> → Install → connectez-vous avec votre compte Claude.",
+      qs_s4:"<b>4. Votre toute première requête :</b> ouvrez Claude (l'icône ✨) et collez la ligne ci-dessous — Claude installe Git + Node.js pour vous et vérifie tout lui-même :",
       qs_copy:"Copier",
-      qs_note:"Elle se termine par une liste de vérification ✓. Si quelque chose est en rouge : fermez la fenêtre, ouvrez un NOUVEAU PowerShell et relancez la même ligne. Les comptes (Claude Pro/Max, GitHub, Supabase, Netlify) se créent dans le navigateur — et ne connectez rien encore, on le fait ensemble.",
+      qs_note:"Approuvez les commandes que Claude propose, et cliquez « Trust » si VS Code le demande — c'est normal. Vous n'aurez jamais à ouvrir un terminal vous-même : Claude fait le travail. Ne connectez rien encore — on fait le branchement ensemble à la séance.",
       m_eyebrow:"La vue d'ensemble d'abord", m_h2:"Comment tout s'assemble",
       m_lead:"Voici une journée de travail normale, de haut en bas. Comprenez l'image et chaque outil devient logique. Cliquez sur une case pour y accéder.",
       actor_you:"VOUS", arr_talk:"vous parlez en langage courant",
